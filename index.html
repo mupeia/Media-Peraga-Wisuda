@@ -77,53 +77,33 @@
         /* INFO DATA SISWA YANG SEDANG UJIAN */
         .active-student-badge { position: absolute; top: 15px; right: 20px; background: #aa820a; color: #ffffff; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; }
         
-        /* Loading text */
         .loading-text { color: #ffffff; font-style: italic; font-size: 16px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
+    <!-- ================= SLIDE 1: COVER ACARA ================= -->
     <div id="slide1" class="slide active">
         <h1 class="cover-title">WISUDA TAJWID MD-TK 2026</h1>
         <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar 4</p>
         <button class="btn-start" onclick="pindahSlide(2)">Mulai &rarr;</button>
-        <div id="loadingStatus" class="loading-text">Menghubungkan ke Google Sheets...</div>
+        <div id="loadingStatus" class="loading-text">Menghubungkan ke Database Quran & Siswa Online...</div>
     </div>
 
 
+    <!-- ================= SLIDE 2: DATA SISWA UJIAN ================= -->
     <div id="slide2" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali ke Judul</button>
         <h2 class="section-title">Daftar Peserta Ujian Tajwid</h2>
         
-        <div class="grid-siswa">
-            <div class="card-siswa" onclick="pilihSiswa('Ahmad Fauzan', '001/WT/2026')">
-                <h3>Ahmad Fauzan</h3>
-                <p>No. Reg: 001/WT/2026</p>
-            </div>
-            <div class="card-siswa" onclick="pilihSiswa('Siti Aminah', '002/WT/2026')">
-                <h3>Siti Aminah</h3>
-                <p>No. Reg: 002/WT/2026</p>
-            </div>
-            <div class="card-siswa" onclick="pilihSiswa('Muhammad Rizky', '003/WT/2026')">
-                <h3>Muhammad Rizky</h3>
-                <p>No. Reg: 003/WT/2026</p>
-            </div>
-            <div class="card-siswa" onclick="pilihSiswa('Laila Fitriani', '004/WT/2026')">
-                <h3>Laila Fitriani</h3>
-                <p>No. Reg: 004/WT/2026</p>
-            </div>
-            <div class="card-siswa" onclick="pilihSiswa('Rian Hidayat', '005/WT/2026')">
-                <h3>Rian Hidayat</h3>
-                <p>No. Reg: 005/WT/2026</p>
-            </div>
-            <div class="card-siswa" onclick="pilihSiswa('Zahra Aulia', '006/WT/2026')">
-                <h3>Zahra Aulia</h3>
-                <p>No. Reg: 006/WT/2026</p>
-            </div>
+        <!-- Wadah Grid Otomatis Terisi dari Tab Siswa -->
+        <div class="grid-siswa" id="gridSiswaKontainer">
+            <div class="loading-text">Memuat daftar nama siswa dari spreadsheet...</div>
         </div>
     </div>
 
 
+    <!-- ================= SLIDE 3: DISPLAY AL-QURAN INTERAKTIF ================= -->
     <div id="slide3" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(2)">&larr; Kembali ke Data Siswa</button>
         <div class="active-student-badge" id="siswaAktifBadge">Peserta: Umum</div>
@@ -188,8 +168,11 @@
     </div>
 
     <script>
-        // URL Google Spreadsheet CSV milikmu
-        const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=0&single=true&output=csv";
+        // ================= MASUKKAN LINK CSV MASING-MASING TAB DI SINI =================
+        const URL_DATABASE_QURAN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=0&single=true&output=csv";
+        
+        // GANTI LINK DI BAWAH INI dengan link CSV khusus untuk Tab "Siswa" kamu
+        const URL_DATABASE_SISWA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=1005251124&single=true&output=csv"; 
 
         let quranDatabaseOnline = {};
 
@@ -214,52 +197,80 @@
             21: 29, 22: 33, 23: 36, 24: 39, 25: 41, 26: 46, 27: 51, 28: 58, 29: 67, 30: 78
         };
 
-        // Membaca Kolom Tepat Sesuai Gambar yang Diupload
-        async function muatDatabaseSpreadsheet() {
+        // Fungsi Memuat Database Gabungan Online
+        async function muatSemuaDatabase() {
+            // 1. Ambil Data Quran (Sesuai Gambar Format Kolom Baru)
             try {
-                const response = await fetch(SPREADSHEET_URL);
-                const csvText = await response.text();
-                const baris = csvText.split(/\r?\n/);
+                const responseQ = await fetch(URL_DATABASE_QURAN);
+                const csvQ = await responseQ.text();
+                const barisQ = csvQ.split(/\r?\n/);
 
-                // Looping dimulai dari i = 1 (melewati baris header ID_KUNCI, SURAT, AYAT, TEKS_ARAB)
-                for (let i = 1; i < baris.length; i++) {
-                    if (!baris[i]) continue;
-                    
-                    // Parsing baris CSV dengan memisahkan karakter koma (,)
-                    const kolom = baris[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    
-                    // Kolom A (Indeks 0) = ID_KUNCI (contoh: "1_1")
-                    // Kolom D (Indeks 3) = TEKS_ARAB
+                for (let i = 1; i < barisQ.length; i++) {
+                    if (!barisQ[i]) continue;
+                    const kolom = barisQ[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if (kolom[0] && kolom[3]) {
-                        const key = kolom[0].replace(/"/g, '').trim(); // Hasil: "1_1"
-                        const teksArab = kolom[3].replace(/"/g, '').trim(); // Teks Ayatnya
-                        
+                        const key = kolom[0].replace(/"/g, '').trim(); 
+                        const teksArab = kolom[3].replace(/"/g, '').trim(); 
                         quranDatabaseOnline[key] = teksArab;
                     }
                 }
+                document.getElementById("loadingStatus").innerText = "Database Quran Sinkron...";
+            } catch (e) {
+                console.error("Gagal Muat Quran:", e);
+            }
 
-                document.getElementById("loadingStatus").innerText = "Database Quran Online Siap!";
-                setTimeout(() => document.getElementById("loadingStatus").style.display = 'none', 3000);
+            // 2. Ambil Data Siswa Dari Tab Kedua
+            try {
+                const responseS = await fetch(URL_DATABASE_SISWA);
+                const csvS = await responseS.text();
+                const barisS = csvS.split(/\r?\n/);
+                
+                let htmlSiswa = "";
+                let countSiswa = 0;
 
-            } catch (error) {
-                console.error("Gagal memuat Spreadsheet:", error);
-                document.getElementById("loadingStatus").innerText = "⚠️ Gagal Koneksi ke Database Online!";
+                for (let i = 1; i < barisS.length; i++) {
+                    if (!barisS[i]) continue;
+                    const kolom = barisS[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
+                    const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
+                    const noReg = kolom[1] ? kolom[1].replace(/"/g, '').trim() : "";
+
+                    if (nama && noReg) {
+                        htmlSiswa += `
+                            <div class="card-siswa" onclick="pilihSiswa('${nama}', '${noReg}')">
+                                <h3>${nama}</h3>
+                                <p>No. Reg: ${noReg}</p>
+                            </div>
+                        `;
+                        countSiswa++;
+                    }
+                }
+
+                if (countSiswa > 0) {
+                    document.getElementById("gridSiswaKontainer").innerHTML = htmlSiswa;
+                } else {
+                    document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text">⚠️ Tab siswa kosong atau salah format kolom.</div>`;
+                }
+
+                document.getElementById("loadingStatus").innerText = "Semua Sistem Online Siap!";
+                setTimeout(() => document.getElementById("loadingStatus").style.display = 'none', 2000);
+
+            } catch (err) {
+                console.error("Gagal Muat Siswa:", err);
+                document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text" style="color:#ff6b6b">⚠️ Gagal mengambil data siswa online. Cek koneksi internet!</div>`;
             }
         }
 
-        // Pindah Antar Slide PPT
         function pindahSlide(nomorSlide) {
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById(`slide${nomorSlide}`).classList.add('active');
         }
 
-        // Memilih Siswa dari Slide 2 dan Melompat ke Slide 3
         function pilihSiswa(nama, noReg) {
             document.getElementById("siswaAktifBadge").innerText = `Peserta: ${nama} (${noReg})`;
             pindahSlide(3);
         }
 
-        // Dropdown Shortcut Batas Juz Berdasarkan Gambar Panduan
         function lompatKeAwalJuz() {
             let selectJuz = document.getElementById("juzShortcutSelect");
             let shortcutValue = selectJuz.value;
@@ -273,14 +284,12 @@
             renderAyatLayar();
         }
 
-        // Menampilkan Ayat ke Area Slide 3
         function renderAyatLayar() {
             const surahId = parseInt(document.getElementById("surahSelect").value);
             const ayatNum = parseInt(document.getElementById("ayatInput").value);
-            const key = `${surahId}_${ayatNum}`; // Contoh generate key untuk dicocokkan: "1_4"
+            const key = `${surahId}_${ayatNum}`;
             const namaSurahBersih = daftarNamaSurah[surahId - 1];
 
-            // Hitung otomatis Juz berdasarkan batasan input gambar
             let juzTerdeteksi = 1;
             for (let i = 0; i < daftarBatasJuz.length; i++) {
                 let batas = daftarBatasJuz[i];
@@ -293,7 +302,6 @@
 
             document.getElementById("metaInfoDisplay").innerText = `Juz ${juzTerdeteksi} | Surah ${surahId}. ${namaSurahBersih} : Ayat ${ayatNum}`;
 
-            // Ambil langsung dari key ID_KUNCI spreadsheet online
             if (quranDatabaseOnline[key]) {
                 document.getElementById("arabicTextDisplay").innerText = quranDatabaseOnline[key];
             } else {
@@ -301,11 +309,10 @@
             }
         }
 
-        // Fungsi Next / Prev Ayat
         function navigasiAyat(arah) {
             let ayatInput = document.getElementById("ayatInput");
             let nilaiSekarang = parseInt(ayatInput.value);
-            let nilaiBaru = nilaiSekarang + arah;
+            let nilaiBaru = nilaiSekarang + graphite = nilaiSekarang + arah;
 
             if (nilaiBaru >= 1) {
                 ayatInput.value = nilaiBaru;
@@ -322,7 +329,7 @@
                 select.appendChild(opt);
             });
             
-            muatDatabaseSpreadsheet();
+            muatSemuaDatabase();
             renderAyatLayar();
         };
     </script>
