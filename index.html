@@ -61,7 +61,7 @@
         .panel-control-top { display: flex; gap: 15px; width: 90%; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(212,175,55,0.2); margin-bottom: 20px; align-items: flex-end; }
         .control-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .control-group label { font-size: 12px; color: #d4af37; font-weight: bold; text-transform: uppercase; }
-        .select, input { background-color: #163d33; color: #ffffff; border: 1px solid #d4af37; padding: 10px; border-radius: 5px; font-size: 14px; outline: none; }
+        select, input { background-color: #163d33; color: #ffffff; border: 1px solid #d4af37; padding: 10px; border-radius: 5px; font-size: 14px; outline: none; }
         .btn-tampil { background: #d4af37; color: #0d231d; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; height: 41px; }
 
         /* DISPLAY UTAMA AYAT (STERIL & BESAR) */
@@ -82,6 +82,7 @@
 </head>
 <body>
 
+    <!-- ================= SLIDE 1: COVER ACARA ================= -->
     <div id="slide1" class="slide active">
         <h1 class="cover-title">WISUDA TAJWID MD-TK 2026</h1>
         <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar 4</p>
@@ -90,16 +91,19 @@
     </div>
 
 
+    <!-- ================= SLIDE 2: DATA SISWA UJIAN ================= -->
     <div id="slide2" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali ke Judul</button>
         <h2 class="section-title">Daftar Peserta Ujian Tajwid</h2>
         
+        <!-- Wadah Grid Otomatis Terisi dari Tab Siswa -->
         <div class="grid-siswa" id="gridSiswaKontainer">
             <div class="loading-text">Memuat daftar nama siswa dari spreadsheet...</div>
         </div>
     </div>
 
 
+    <!-- ================= SLIDE 3: DISPLAY AL-QURAN INTERAKTIF ================= -->
     <div id="slide3" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(2)">&larr; Kembali ke Data Siswa</button>
         <div class="active-student-badge" id="siswaAktifBadge">Peserta: Umum</div>
@@ -195,7 +199,7 @@
 
         // Fungsi Memuat Database Gabungan Online
         async function muatSemuaDatabase() {
-            // 1. Ambil Data Quran
+            // 1. Ambil Data Quran (Sesuai Gambar Format Kolom Baru)
             try {
                 const responseQ = await fetch(URL_DATABASE_QURAN);
                 const csvQ = await responseQ.text();
@@ -203,8 +207,7 @@
 
                 for (let i = 1; i < barisQ.length; i++) {
                     if (!barisQ[i]) continue;
-                    // Menggunakan split koma sederhana agar anti-lag dan anti-freeze
-                    const kolom = barisQ[i].split(",");
+                    const kolom = barisQ[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if (kolom[0] && kolom[3]) {
                         const key = kolom[0].replace(/"/g, '').trim(); 
                         const teksArab = kolom[3].replace(/"/g, '').trim(); 
@@ -227,7 +230,7 @@
 
                 for (let i = 1; i < barisS.length; i++) {
                     if (!barisS[i]) continue;
-                    const kolom = barisS[i].split(",");
+                    const kolom = barisS[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     
                     const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
                     const noReg = kolom[1] ? kolom[1].replace(/"/g, '').trim() : "";
@@ -309,7 +312,7 @@
         function navigasiAyat(arah) {
             let ayatInput = document.getElementById("ayatInput");
             let nilaiSekarang = parseInt(ayatInput.value);
-            let nilaiBaru = nilaiSekarang + arah;
+            let nilaiBaru = nilaiSekarang + graphite = nilaiSekarang + arah;
 
             if (nilaiBaru >= 1) {
                 ayatInput.value = nilaiBaru;
