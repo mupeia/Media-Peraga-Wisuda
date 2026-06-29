@@ -61,7 +61,7 @@
         .panel-control-top { display: flex; gap: 15px; width: 90%; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(212,175,55,0.2); margin-bottom: 20px; align-items: flex-end; }
         .control-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .control-group label { font-size: 12px; color: #d4af37; font-weight: bold; text-transform: uppercase; }
-        select, input { background-color: #163d33; color: #ffffff; border: 1px solid #d4af37; padding: 10px; border-radius: 5px; font-size: 14px; outline: none; }
+        select, input { background-color: #163d33; color: #ffffff; border: 1px solid #d4af37; padding: 10px; border-radius: 5px; font-size: 14px; outline: none; width: 100%; }
         .btn-tampil { background: #d4af37; color: #0d231d; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; height: 41px; }
 
         /* DISPLAY UTAMA AYAT (STERIL & BESAR) */
@@ -76,13 +76,54 @@
 
         /* INFO DATA SISWA YANG SEDANG UJIAN */
         .active-student-badge { position: absolute; top: 15px; right: 20px; background: #aa820a; color: #ffffff; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-        
         .loading-text { color: #ffffff; font-style: italic; font-size: 16px; text-align: center; margin-top: 10px; }
+
+        /* =======================================================
+           ⚡ TAMBAHAN BARU: CSS RESPONSIVE KHUSUS LAYAR HP (MOBILE)
+           ======================================================= */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; height: auto; }
+            .slide { 
+                height: auto; 
+                min-height: 100vh; 
+                padding: 80px 20px 40px 20px; /* Jarak atas ditambah agar tidak menabrak tombol Back */
+                position: relative;
+            }
+            
+            /* Slide 1 - Judul */
+            .cover-title { font-size: 28px; letter-spacing: 1px; }
+            .cover-subtitle { font-size: 16px; margin-bottom: 30px; }
+            
+            /* Slide 2 - Grid Siswa */
+            .section-title { font-size: 22px; width: 100%; margin-bottom: 20px; }
+            .grid-siswa { width: 100%; max-height: none; gap: 12px; }
+            .card-siswa { padding: 15px; }
+
+            /* Slide 3 - Panel Kontrol Dropdown di HP (Menyusun Kebawah) */
+            .panel-control-top { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 12px; 
+                width: 100%;
+                padding: 12px;
+            }
+            .control-group { width: 100%; }
+            .btn-tampil { width: 100%; height: 45px; margin-top: 5px; }
+
+            /* Tampilan Kontainer Teks Ayat Al-Quran di HP */
+            .display-container { width: 100%; min-height: 250px; padding: 15px; }
+            .meta-info { font-size: 15px; margin-bottom: 10px; }
+            .arabic-text { font-size: 30px; line-height: 2.0; max-height: 45vh; }
+            
+            /* Tombol Navigasi Bawah di HP */
+            .nav-ayat-buttons { width: 100%; gap: 10px; margin-top: 15px; }
+            .btn-nav-ayat { padding: 12px; font-size: 13px; }
+            .active-student-badge { position: static; margin-bottom: 15px; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ================= SLIDE 1: COVER ACARA ================= -->
     <div id="slide1" class="slide active">
         <h1 class="cover-title">WISUDA TAJWID MD-TK 2026</h1>
         <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar 4</p>
@@ -90,22 +131,16 @@
         <div id="loadingStatus" class="loading-text">Menghubungkan ke Database Quran & Siswa Online...</div>
     </div>
 
-
-    <!-- ================= SLIDE 2: DATA SISWA UJIAN ================= -->
     <div id="slide2" class="slide">
-        <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali ke Judul</button>
-        <h2 class="section-title">Daftar Peserta Ujian Tajwid</h2>
-        
-        <!-- Wadah Grid Otomatis Terisi dari Tab Siswa -->
+        <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali</button>
+        <h2 class="section-title">Daftar Peserta Ujian</h2>
         <div class="grid-siswa" id="gridSiswaKontainer">
             <div class="loading-text">Memuat daftar nama siswa dari spreadsheet...</div>
         </div>
     </div>
 
-
-    <!-- ================= SLIDE 3: DISPLAY AL-QURAN INTERAKTIF ================= -->
     <div id="slide3" class="slide">
-        <button class="btn-back-slide" onclick="pindahSlide(2)">&larr; Kembali ke Data Siswa</button>
+        <button class="btn-back-slide" onclick="pindahSlide(2)">&larr; Kembali</button>
         <div class="active-student-badge" id="siswaAktifBadge">Peserta: Umum</div>
 
         <div class="panel-control-top">
@@ -149,7 +184,7 @@
                 <label>Pilih Surah</label>
                 <select id="surahSelect"></select>
             </div>
-            <div class="control-group" style="flex: 0.4;">
+            <div class="control-group">
                 <label>Ayat</label>
                 <input type="number" id="ayatInput" min="1" value="1">
             </div>
@@ -162,8 +197,8 @@
         </div>
 
         <div class="nav-ayat-buttons">
-            <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Ayat Sebelumnya</button>
-            <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Ayat Berikutnya &rarr;</button>
+            <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Prev</button>
+            <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Next &rarr;</button>
         </div>
     </div>
 
@@ -171,8 +206,8 @@
         // ================= MASUKKAN LINK CSV MASING-MASING TAB DI SINI =================
         const URL_DATABASE_QURAN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=0&single=true&output=csv";
         
-        // GANTI LINK DI BAWAH INI dengan link CSV khusus untuk Tab "Siswa" kamu
-        const URL_DATABASE_SISWA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=1005251124&single=true&output=csv"; 
+        // PENTING: Ganti link di bawah dengan link CSV khusus untuk Tab "Siswa" milikmu
+        const URL_DATABASE_SISWA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=123456789&single=true&output=csv"; 
 
         let quranDatabaseOnline = {};
 
@@ -197,9 +232,8 @@
             21: 29, 22: 33, 23: 36, 24: 39, 25: 41, 26: 46, 27: 51, 28: 58, 29: 67, 30: 78
         };
 
-        // Fungsi Memuat Database Gabungan Online
         async function muatSemuaDatabase() {
-            // 1. Ambil Data Quran (Sesuai Gambar Format Kolom Baru)
+            // 1. Load Data Al-Quran
             try {
                 const responseQ = await fetch(URL_DATABASE_QURAN);
                 const csvQ = await responseQ.text();
@@ -219,7 +253,7 @@
                 console.error("Gagal Muat Quran:", e);
             }
 
-            // 2. Ambil Data Siswa Dari Tab Kedua
+            // 2. Load Data Siswa
             try {
                 const responseS = await fetch(URL_DATABASE_SISWA);
                 const csvS = await responseS.text();
@@ -249,7 +283,7 @@
                 if (countSiswa > 0) {
                     document.getElementById("gridSiswaKontainer").innerHTML = htmlSiswa;
                 } else {
-                    document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text">⚠️ Tab siswa kosong atau salah format kolom.</div>`;
+                    document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text">⚠️ Tab siswa kosong.</div>`;
                 }
 
                 document.getElementById("loadingStatus").innerText = "Semua Sistem Online Siap!";
@@ -257,7 +291,7 @@
 
             } catch (err) {
                 console.error("Gagal Muat Siswa:", err);
-                document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text" style="color:#ff6b6b">⚠️ Gagal mengambil data siswa online. Cek koneksi internet!</div>`;
+                document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text" style="color:#ff6b6b">⚠️ Gagal mengambil data siswa. Cek koneksi internet!</div>`;
             }
         }
 
@@ -305,14 +339,14 @@
             if (quranDatabaseOnline[key]) {
                 document.getElementById("arabicTextDisplay").innerText = quranDatabaseOnline[key];
             } else {
-                document.getElementById("arabicTextDisplay").innerText = `(Teks Arab untuk Surah ${surahId} Ayat ${ayatNum} tidak ditemukan)`;
+                document.getElementById("arabicTextDisplay").innerText = `(Teks Arab tidak ditemukan)`;
             }
         }
 
         function navigasiAyat(arah) {
             let ayatInput = document.getElementById("ayatInput");
             let nilaiSekarang = parseInt(ayatInput.value);
-            let nilaiBaru = nilaiSekarang + graphite = nilaiSekarang + arah;
+            let nilaiBaru = nilaiSekarang + arah;
 
             if (nilaiBaru >= 1) {
                 ayatInput.value = nilaiBaru;
