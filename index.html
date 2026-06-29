@@ -78,28 +78,23 @@
         .active-student-badge { position: absolute; top: 15px; right: 20px; background: #aa820a; color: #ffffff; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; }
         .loading-text { color: #ffffff; font-style: italic; font-size: 16px; text-align: center; margin-top: 10px; }
 
-        /* =======================================================
-           ⚡ TAMBAHAN BARU: CSS RESPONSIVE KHUSUS LAYAR HP (MOBILE)
-           ======================================================= */
+        /* CSS RESPONSIVE KHUSUS LAYAR HP (MOBILE) */
         @media (max-width: 768px) {
             body { overflow-y: auto; height: auto; }
             .slide { 
                 height: auto; 
                 min-height: 100vh; 
-                padding: 80px 20px 40px 20px; /* Jarak atas ditambah agar tidak menabrak tombol Back */
+                padding: 80px 20px 40px 20px; 
                 position: relative;
             }
             
-            /* Slide 1 - Judul */
             .cover-title { font-size: 28px; letter-spacing: 1px; }
             .cover-subtitle { font-size: 16px; margin-bottom: 30px; }
             
-            /* Slide 2 - Grid Siswa */
             .section-title { font-size: 22px; width: 100%; margin-bottom: 20px; }
             .grid-siswa { width: 100%; max-height: none; gap: 12px; }
             .card-siswa { padding: 15px; }
 
-            /* Slide 3 - Panel Kontrol Dropdown di HP (Menyusun Kebawah) */
             .panel-control-top { 
                 flex-direction: column; 
                 align-items: stretch; 
@@ -110,12 +105,10 @@
             .control-group { width: 100%; }
             .btn-tampil { width: 100%; height: 45px; margin-top: 5px; }
 
-            /* Tampilan Kontainer Teks Ayat Al-Quran di HP */
             .display-container { width: 100%; min-height: 250px; padding: 15px; }
             .meta-info { font-size: 15px; margin-bottom: 10px; }
             .arabic-text { font-size: 30px; line-height: 2.0; max-height: 45vh; }
             
-            /* Tombol Navigasi Bawah di HP */
             .nav-ayat-buttons { width: 100%; gap: 10px; margin-top: 15px; }
             .btn-nav-ayat { padding: 12px; font-size: 13px; }
             .active-student-badge { position: static; margin-bottom: 15px; text-align: center; }
@@ -205,25 +198,12 @@
     <script>
         // ================= MASUKKAN LINK CSV MASING-MASING TAB DI SINI =================
         const URL_DATABASE_QURAN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=0&single=true&output=csv";
-        
-        // PENTING: Ganti link di bawah dengan link CSV khusus untuk Tab "Siswa" milikmu
         const URL_DATABASE_SISWA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQSLdOv1AZmSd-BMDOTA6B1V8UXHtXcJ5FfqjPHTUWRkJ5bJxeTgQZAsBa9SLzGUI5gUog-VgfhB5g/pub?gid=123456789&single=true&output=csv"; 
 
         let quranDatabaseOnline = {};
 
         const daftarNamaSurah = [
             "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra'","Al-Kahf","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-'Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba'","Fatir","Yasin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jasiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Az-Zariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddassir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","'Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Insiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams","Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-'Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-'Adiyat","Al-Qari'ah","At-Takasur","Al-'Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma'un","Al-Kausar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"
-        ];
-
-        const daftarBatasJuz = [
-            { juz: 1, s: 1, a: 1 },    { juz: 2, s: 2, a: 142 },  { juz: 3, s: 2, a: 253 },  { juz: 4, s: 3, a: 92 },
-            { juz: 5, s: 4, a: 24 },   { juz: 6, s: 4, a: 148 },  { juz: 7, s: 5, a: 83 },   { juz: 8, s: 6, a: 111 },
-            { juz: 9, s: 7, a: 88 },   { juz: 10, s: 8, a: 41 },  { juz: 11, s: 9, a: 94 },  { juz: 12, s: 11, a: 6 },
-            { juz: 13, s: 12, a: 53 }, { juz: 14, s: 15, a: 2 },  { juz: 15, s: 17, a: 1 },  { juz: 16, s: 18, a: 75 },
-            { juz: 17, s: 21, a: 1 },  { juz: 18, s: 23, a: 1 },  { juz: 19, s: 25, a: 21 }, { juz: 20, s: 27, a: 60 },
-            { juz: 21, s: 29, a: 45 }, { juz: 22, s: 33, a: 31 }, { juz: 23, s: 36, a: 22 }, { juz: 24, s: 39, a: 32 },
-            { juz: 25, s: 41, a: 47 }, { juz: 26, s: 46, a: 1 },  { juz: 27, s: 51, a: 31 }, { juz: 28, s: 58, a: 1 },
-            { juz: 29, s: 67, a: 1 },  { juz: 30, s: 78, a: 1 }
         ];
 
         const petaNomorSurahPintasan = {
@@ -233,7 +213,6 @@
         };
 
         async function muatSemuaDatabase() {
-            // 1. Load Data Al-Quran
             try {
                 const responseQ = await fetch(URL_DATABASE_QURAN);
                 const csvQ = await responseQ.text();
@@ -253,7 +232,6 @@
                 console.error("Gagal Muat Quran:", e);
             }
 
-            // 2. Load Data Siswa
             try {
                 const responseS = await fetch(URL_DATABASE_SISWA);
                 const csvS = await responseS.text();
@@ -324,17 +302,8 @@
             const key = `${surahId}_${ayatNum}`;
             const namaSurahBersih = daftarNamaSurah[surahId - 1];
 
-            let juzTerdeteksi = 1;
-            for (let i = 0; i < daftarBatasJuz.length; i++) {
-                let batas = daftarBatasJuz[i];
-                if (surahId > batas.s || (surahId === batas.s && ayatNum >= batas.a)) {
-                    juzTerdeteksi = batas.j;
-                } else {
-                    break;
-                }
-            }
-
-            document.getElementById("metaInfoDisplay").innerText = `Juz ${juzTerdeteksi} | Surah ${surahId}. ${namaSurahBersih} : Ayat ${ayatNum}`;
+            // Tampilan info tanpa bagian kata "Juz"
+            document.getElementById("metaInfoDisplay").innerText = `Surah ${surahId}. ${namaSurahBersih} : Ayat ${ayatNum}`;
 
             if (quranDatabaseOnline[key]) {
                 document.getElementById("arabicTextDisplay").innerText = quranDatabaseOnline[key];
