@@ -82,7 +82,6 @@
 </head>
 <body>
 
-    <!-- ================= SLIDE 1: COVER ACARA ================= -->
     <div id="slide1" class="slide active">
         <h1 class="cover-title">WISUDA TAJWID MD-TK 2026</h1>
         <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar 4</p>
@@ -91,19 +90,16 @@
     </div>
 
 
-    <!-- ================= SLIDE 2: DATA SISWA UJIAN ================= -->
     <div id="slide2" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali ke Judul</button>
         <h2 class="section-title">Daftar Peserta Ujian Tajwid</h2>
         
-        <!-- Wadah Grid Otomatis Terisi dari Tab Siswa -->
         <div class="grid-siswa" id="gridSiswaKontainer">
             <div class="loading-text">Memuat daftar nama siswa dari spreadsheet...</div>
         </div>
     </div>
 
 
-    <!-- ================= SLIDE 3: DISPLAY AL-QURAN INTERAKTIF ================= -->
     <div id="slide3" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(2)">&larr; Kembali ke Data Siswa</button>
         <div class="active-student-badge" id="siswaAktifBadge">Peserta: Umum</div>
@@ -199,7 +195,7 @@
 
         // Fungsi Memuat Database Gabungan Online
         async function muatSemuaDatabase() {
-            // 1. Ambil Data Quran (Sesuai Gambar Format Kolom Baru)
+            // 1. Ambil Data Quran
             try {
                 const responseQ = await fetch(URL_DATABASE_QURAN);
                 const csvQ = await responseQ.text();
@@ -207,7 +203,8 @@
 
                 for (let i = 1; i < barisQ.length; i++) {
                     if (!barisQ[i]) continue;
-                    const kolom = barisQ[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    // Menggunakan split koma sederhana agar anti-lag dan anti-freeze
+                    const kolom = barisQ[i].split(",");
                     if (kolom[0] && kolom[3]) {
                         const key = kolom[0].replace(/"/g, '').trim(); 
                         const teksArab = kolom[3].replace(/"/g, '').trim(); 
@@ -230,7 +227,7 @@
 
                 for (let i = 1; i < barisS.length; i++) {
                     if (!barisS[i]) continue;
-                    const kolom = barisS[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    const kolom = barisS[i].split(",");
                     
                     const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
                     const noReg = kolom[1] ? kolom[1].replace(/"/g, '').trim() : "";
