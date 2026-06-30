@@ -127,8 +127,8 @@
                 </div>
 
                 <div class="nav-ayat-buttons">
-                    <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Ayat Sebelum</button>
-                    <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Ayat Berikut &rarr;</button>
+                    <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Ayat Sebelumnya</button>
+                    <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Ayat Berikutnya &rarr;</button>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
             // Render pembaruan teks info di panel kiri Slide 3 sesuai instruksi revisi
             document.getElementById("displayMeta").innerHTML = `
                 <strong>Nomor Dada:</strong> #${noDada}
-                <strong>Tarikh Lahir:</strong> ${tarikh || '-'}
+                <strong>Tanggal Lahir:</strong> ${tarikh || '-'}
                 <strong>Orangtua:</strong> ${orangtua || '-'}
             `;
             
