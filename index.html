@@ -88,7 +88,7 @@
     <!-- SLIDE 2 -->
     <div id="slide2" class="slide">
         <button class="btn-back-slide" onclick="pindahSlide(1)">&larr; Kembali</button>
-        <h2 class="section-title">Daftar Peserta Ujian Tajwid</h2>
+        <h2 class="section-title">Daftar Peserta Wisuda Tajwid</h2>
         <div class="grid-siswa" id="gridSiswaKontainer">
             <div class="loading-text">Memuat database online peserta wisuda...</div>
         </div>
@@ -131,8 +131,8 @@
                 </div>
 
                 <div class="nav-ayat-buttons">
-                    <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Ayat Sebelum</button>
-                    <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Ayat Berikut &rarr;</button>
+                    <button class="btn-nav-ayat" onclick="navigasiAyat(-1)">&larr; Ayat Sebelumnya</button>
+                    <button class="btn-nav-ayat" onclick="navigasiAyat(1)">Ayat Berikutnya &rarr;</button>
                 </div>
             </div>
         </div>
@@ -161,22 +161,24 @@
                     if (!baris[i].trim()) continue;
                     let separator = baris[i].includes(';') ? ';' : ',';
                     const kolom = baris[i].split(new RegExp(`${separator}(?=(?:(?:[^"]*"){2})*[^"]*$)`));
-                    
+
+                    // 1. Sesuaikan indeks kolom dengan database terbaru (image_70987d.png)
                     const noUrut = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
                     const nama = kolom[1] ? kolom[1].replace(/"/g, '').trim() : "";
-                    const ayah = kolom[4] ? kolom[4].replace(/"/g, '').trim() : "";
-                    const ibu = kolom[5] ? kolom[5].replace(/"/g, '').trim() : "";
-                    const urlFoto = kolom[6] ? kolom[6].replace(/"/g, '').trim() : ""; // Kolom baru G
+                    const tanggalLahir = kolom[2] ? kolom[2].replace(/"/g, '').trim() : "";
+                    const bapak = kolom[3] ? kolom[3].replace(/"/g, '').trim() : ""; // Kolom D
+                    const ibu = kolom[4] ? kolom[4].replace(/"/g, '').trim() : "";  // Kolom E
+                    const urlFoto = kolom[5] ? kolom[5].replace(/"/g, '').trim() : ""; // Kolom F
 
                     if (nama && nama !== "NAMA" && noUrut !== "NO") {
-                        // Menangani bapak/ibu untuk subtitle card kecil
-                        let ortu = ayah || ibu || "-";
-                        
+                    // 2. GANTI DI SINI: Ubah urutan agar memprioritaskan nama Bapa terlebih dahulu
+                        let ortu = bapa || ibu || "-"; 
+    
                         htmlSiswa += `
-                            <div class="card-siswa" onclick="pilihSiswa('${noUrut}', '${nama.replace(/'/g, "\\'")}', '${ortu.replace(/'/g, "\\'")}', '${urlFoto}')">
+                            <div class="card-siswa" onclick="pilihSiswa('${noUrut}', '${nama.replace(/'/g, "\\'")}', '${tarikhLahir.replace(/'/g, "\\'")}', '${bapa.replace(/'/g, "\\'")}', '${ibu.replace(/'/g, "\\'")}', '${urlFoto}')">
                                 <h3>${nama}</h3>
                                 <p>No. Urut: ${noUrut}</p>
-                                <p style="font-size:11px; opacity:0.7;">Penjaga: ${ortu}</p>
+                                <p style="font-size:11px; opacity:0.7;">Orangtua: ${ortu}</p> 
                             </div>
                         `;
                     }
@@ -198,7 +200,7 @@
             document.getElementById("displayNama").innerText = nama;
             document.getElementById("displayMeta").innerHTML = `
                 <strong>No. Urut:</strong> ${noUrut} <br>
-                <strong>Penjaga / Ortu:</strong> ${ortu}
+                <strong>Orangtua:</strong> ${ortu}
             `;
             
             const frame = document.getElementById("displayFoto");
