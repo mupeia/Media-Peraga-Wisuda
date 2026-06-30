@@ -172,7 +172,7 @@
 
                     if (nama && nama !== "NAMA" && noUrut !== "NO") {
                     // 2. GANTI DI SINI: Ubah urutan agar memprioritaskan nama Bapa terlebih dahulu
-                        let ortu = bapa || ibu || "-"; 
+                        let ortu = bapak || ibu || "-"; 
     
                         htmlSiswa += `
                             <div class="card-siswa" onclick="pilihSiswa('${noUrut}', '${nama.replace(/'/g, "\\'")}', '${tarikhLahir.replace(/'/g, "\\'")}', '${bapa.replace(/'/g, "\\'")}', '${ibu.replace(/'/g, "\\'")}', '${urlFoto}')">
