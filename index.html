@@ -148,14 +148,15 @@
                 const baris = csvText.split(/\r?\n/);
                 
                 let htmlSiswa = "";
-                let nomorDadaCounter = 1; // Membuat nomor dada urut otomatis secara internal
+                let nomorDadaCounter = 1; 
 
                 for (let i = 1; i < baris.length; i++) {
                     if (!baris[i].trim()) continue;
                     let separator = baris[i].includes(';') ? ';' : ',';
-                    const kolom = baris[i].split(new RegExp(`${separator}(?=(?:(?:[^"]*"){2})*[^()]*$)`));
+                    // PERBAIKAN: Regex untuk split kolom CSV disempurnakan agar stabil
+                    const kolom = baris[i].split(new RegExp(`${separator}(?=(?:(?:[^"]*"){2})*[^"]*$)`));
                     
-                    // Menyesuaikan pemetaan urutan kolom pasca kolom NO dan WILAYAH dihapus (image_716d9b.png)
+                    // Membaca susunan sesuai image_716d9b.png (Nama, Tarikh, Bapa, Ibu, Foto)
                     const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
                     const tarikhLahir = kolom[1] ? kolom[1].replace(/"/g, '').trim() : "";
                     const bapa = kolom[2] ? kolom[2].replace(/"/g, '').trim() : "";
@@ -163,7 +164,6 @@
                     const urlFoto = kolom[4] ? kolom[4].replace(/"/g, '').trim() : ""; 
 
                     if (nama && nama !== "NAMA") {
-                        // Membuat format 3 digit teks nomor dada otomatis (contoh: 001, 002)
                         let noDadaOtomatis = String(nomorDadaCounter).padStart(3, '0');
                         let orangTuaBapa = bapa || "-";
 
@@ -183,7 +183,6 @@
                 document.getElementById("gridSiswaKontainer").innerHTML = `<div class="loading-text" style="color:#ff6b6b;">⚠️ Gagal memuat data siswa online.</div>`;
             }
         }
-
         function pindahSlide(nomorSlide) {
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById(`slide${nomorSlide}`).classList.add('active');
