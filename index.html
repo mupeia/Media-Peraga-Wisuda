@@ -81,7 +81,7 @@
 
     <div id="slide1" class="slide active">
         <h1 class="cover-title">WISUDA TAJWID MD 2026</h1>
-        <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar 4</p>
+        <p class="cover-subtitle">Haflatul Imtihan Wal Ikhtihar</p>
         <button class="btn-start" onclick="pindahSlide(2)">Mulai &rarr;</button>
         <div id="loadingStatus" class="loading-text">Sinkronisasi data siswa dari Google Sheets...</div>
     </div>
@@ -191,10 +191,10 @@
         function pilihSiswa(noDada, nama, tarikh, orangtua, urlFoto) {
             document.getElementById("displayNama").innerText = nama;
             
-            // REVISI SLIDE 3: Tanda # dihapus dari tampilan Nomor Dada
+            // UPDATE: Label diubah secara dinamis menjadi Tempat Tanggal Lahir
             document.getElementById("displayMeta").innerHTML = `
                 <strong>Nomor Dada:</strong> ${noDada}
-                <strong>Tanggal Lahir:</strong> ${tarikh || '-'}
+                <strong>Tempat Tanggal Lahir:</strong> ${tarikh || '-'}
                 <strong>Orangtua:</strong> ${orangtua || '-'}
             `;
             
